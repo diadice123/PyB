@@ -39,11 +39,37 @@ title = doc.select("h3.tit_view")[0].get_text()
 print(f"뉴스 제목: {title}")   
 
 # 본문 : 여러개의 p 태그로 구성
+"""
 contents = doc.select("section > p")
 content = ""
 for text in contents:
     content += text.get_text()
 print(f"뉴스 본문: {content}")
+"""
+
+# 기자 : 
+writer = doc.select("span.txt_info")[0].get_text()
+print(f"기자 : {writer}")
+
+# 날짜 :
+reg_date = doc.select("span.num_date")[0].get_text()
+
+#print(reg_date.replace('. ','')[:-5])
+
+# 방법 1. stlit의 구분자
+#split_list = reg_date.split('. ') # ['2024', '10', '28', '14:42']
+# reg_date = split_list[0] + split_list[1] + split_list[2]
+
+split_list = reg_date.split('.') # ['2024', '10', '28', '14:42']
+reg_date = split_list[0].strip2()  +split_list[1].strip2()  + split_list[3].strip()
+# print(reg_date)
+
+#lambda: map(), reduce(), filter()
+#   - map(): 리스트의 모든 값에 내가 원하는 함수를 적용
+#   - reduce() : 덧셈, 곱셈, 등으로 값을부림
+#   - filter(); 조선에 맞는 값만 추출
+split_date = list(map(lambda x: x.strip(), split_list))
+reg_date = split_date[0] + split_date[1] + split_date[2]
 
 # contents → [<p>본1</p>, <p>본2</p>, <p>본3</p>]
 # text → <p>본1</p>
