@@ -16,6 +16,12 @@ import time
 options = Options()
 #   - SELENIUM 동작 후 웹브라이저가 종료(Default) → 끄기
 options.add_experimental_option("detach", True) # 배포시 제거 근데 그냥 데몬써서하는게 더 나을듯
+# options.add_argument("headless") # 데몬상태 
+
+# 브라우저 자동화 탐지를 피하기 위해서
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_experimental_option("useAutomationExtension", False)
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
 # 2. Selenium이 제어하는 Chrome 웹 브라우저 설치
 # service = Service(ChromeDriverManager().install()) # Selenium 버전 4.6 이상부터는 크롬이라면 의미없다.
@@ -36,4 +42,4 @@ serach.send_keys(Keys.ENTER)
 time.sleep(1)
 
 # 5. 전체 소스코드 
-print(driver.page_source)
+print(driver.page_source)   
