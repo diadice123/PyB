@@ -1,4 +1,7 @@
 # 다음 뉴스 수집기
+# STREAMLIT(웹사이트) → 수집(실시간 뉴스) → DB에 저장
+#                                       → CSV 저장
+#                                       → 웹 페이제 데이터 시각화
 
 # 웹 사이트
 #   - 화면 : 뉴스 카테고리를 선택 (stremalit)
@@ -6,7 +9,7 @@
 #   - 화면 : 출력, 엑셀 (다운로드)(streamlit, pandas)
 #   - 저장 : 데이터베이스 저장 (pymysql + MariaDB)
 import streamlit as st
-from fun_new import collect_news
+from project_collector.fnc_news import collect_news
 import re
 
 # README.md → md(Markdown) 문서
