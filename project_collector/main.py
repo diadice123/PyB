@@ -15,7 +15,8 @@ import re
 #   ㄴ emoiji(아이콘) → https://snskeyboard.com/emoji/
 # Streamlit Doc → https://docs.streamlit.io/
 
-category = "digital" # IT
+def convert_df(df):
+    return df.to_csv(index=False, encoding='utf-8')
 
 def main():
     st.set_page_config(
@@ -25,10 +26,22 @@ def main():
     st.title("NEWS: :blue[Collector]")
     st.text("DAUM 뉴스를 수집합니다.") 
 
-    with st.form(key='form'):
-        submitted = st.form_submit_button("수집")
-        if submitted:
-            collect_news()
+    flag = False
+    if st.button('수집'):
+        df_news, count = collect_news()
+        st.write(f"뉴스 {count}건을 수집 완료")
+        st.write(df_news)
+        flag = True
+        news_csv = convert_df(df_news)
+    
+    if flag:
+        st.download_button(
+            label="다운로드",
+            data=news_csv,
+            file_name=f"실시간 뉴스.csv",
+            mime="text/csv",
+            key="download_csv"
+        )
 
 if __name__ == "__main__":
     main()
