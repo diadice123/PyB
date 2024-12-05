@@ -80,7 +80,18 @@ st.markdown("<hr>", unsafe_allow_html=True)
 ## 3.BODY ##
 ############
 def main_page():    # 조회, 검색, 삭제
+    # [전체 데이터 조회]
     rows = book_service.get_books()
+    
+    # [데이터 검색]
+    with st.form("search_form"):
+        keyword = st.text_input("도서 검색")
+        submitted = st.form_submit_button("검색")
+        if submitted:
+            rows = book_service.search_book(keyword)
+            st.write(f'"{keyword}" 검색 결과는 총 {rows.shape[0]}건입니다.')
+    
+    # st.dataframe : → Streamlit에서 표 형태로 출력
     event = st.dataframe(rows,
                          on_select="rerun",
                          selection_mode="single-row",
