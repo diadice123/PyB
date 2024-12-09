@@ -97,11 +97,83 @@ def main_page():    # 조회, 검색, 삭제
                          selection_mode="single-row",
                          use_container_width=True,
                          hide_index=True)
+    if(len(event.selection["rows"])):
+        selected_idx = event.selection["rows"][0]   # 선택한 Dataframe의 Index 값
+        
+        # 등록(INSERT)와 달리 수정(UPDATE)과 삭제(DELETE)는
+        # 사용자가 기존에 입력한 정보값이 필요함.
+        #   → 선택한 행의 값을 가져오기
+        data ={
+            "ISBN": rows.iloc[selected_idx]["book_ISBN"],
+            "book_name": rows.iloc[selected_idx]["book_name"],
+            "book_writer": rows.iloc[selected_idx]["book_writer"],
+            "book_publisher": rows.iloc[selected_idx]["book_publisher"],
+            "book_price": rows.iloc[selected_idx]["book_price"],
+            "register_at": rows.iloc[selected_idx]["register_at"],
+            "useyn": rows.iloc[selected_idx]["useyn"]
+        }
+        # Update 페이지에서 데이터를 사용하기 위해
+        # 상태정보 저장하는곳에 저장
+        st.session_state["data"] = data
+        
+        if st.button("수정"):
+            navigate_to("update")
+        if st.button("삭제"):
+            pass
     
 def insert_page():  # 등록
-    pass
+    with st.form("insert_form"):
+        st.write("도서")
+        book_name = st.text_input("도서명")
+        book_writer = st.text_input("저자")
+        book_publisher = st.text_input("출판사")
+        book_price = st.text_input("가격")
+        submitted = st.form_submit_button("등록")
+        
+        if submitted:
+            # 책 정보
+            book = {
+                "book_name": book_name,
+                "book_writer": book_writer,
+                "book_publisher": book_publisher,
+                "book_price": book_price,
+            }
+            book_service.insert_book(book)
+            st.success("도서 등록 완료")
+            navigate_to("main")
+
 def update_page():  # 수정
-    pass
+    with st.form("update_form"):
+        row = st.session_state["data"]
+        
+        st.write("도서 수정")
+        book_isbn = st.text_input("ISBN", value=row["ISBN"], disabled=True)
+        book_name = st.text_input("도서명", value=row["book_name"])
+        book_writer = st.text_input("저자", value=row["book_writer"])
+        book_publisher = st.text_input("출판사", value=row["book_publisher"])
+        book_price = st.text_input("가격", value=row["book_price"])
+        register_at = st.text_input("등록일", value=row["register_at"])
+        useyn = st.text_input("사용여부", value=row["useyn"])
+        submitted = st.form_submit_button("수정")
+        
+        if submitted:
+            # 책 정보
+            book = {
+                "book_ISBN": book_isbn,
+                "book_name": book_name,
+                "book_writer": book_writer,
+                "book_publisher": book_publisher,
+                "book_price": book_price,
+                "register_at": register_at,
+                "useyn": useyn
+            }
+            book_service.update_book(book)
+            st.success("도서 수정 완료")
+            navigate_to("main")
+
+
+
+
 if st.session_state["page"] == "main":
     main_page()
 elif st.session_state["page"] == "insert":
